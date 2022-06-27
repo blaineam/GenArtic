@@ -10,6 +10,10 @@ RUN echo "gradio" >> pixray/requirements.txt
 
 RUN pip install -r pixray/requirements.txt
 
+RUN pip uninstall -y torch torchvision torchaudio
+
+RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
+
 RUN pip install basicsr 
 
 RUN pip install b2sdk emails python-dotenv
