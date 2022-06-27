@@ -228,4 +228,5 @@ aspect = gr.Radio(choices=['square', 'widescreen','portrait'], label="Size")
 
 # Launch the demo
 iface = gr.Interface(fn=generate, inputs=[email, prompt, quality, style, aspect], outputs=[gr.Image(), gr.PlayableVideo()],live=False)
-iface.launch(debug=True, share=True, enable_queue=True, server_port=8873, server_name="0.0.0.0", auth=[(primary_username, primary_password),(secondary_username, secondary_password)])
+iface.launch(debug=True, share=True, enable_queue=True, server_port=8873, server_name="0.0.0.0")
+#, auth=[(primary_username, primary_password),(secondary_username, secondary_password)]
