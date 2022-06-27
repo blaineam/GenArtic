@@ -4,7 +4,7 @@ RUN mkdir -p /content
 
 WORKDIR /content
 
-RUN git clone --recursive --branch release https://github.com/pixray/pixray
+RUN git clone --recursive --branch release https://github.com/blaineam/pixray
 
 RUN echo "gradio" >> pixray/requirements.txt
 
