@@ -34,6 +34,8 @@ RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.yaml https://dl.nm
 
 RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.ckpt https://dl.nmkd.de/ai/clip/coco/coco.ckpt
 
+RUN apt update && apt install -y ffmpeg
+
 ADD genartic.py /content/
 
 ENV PYTHONUNBUFFERED=1
