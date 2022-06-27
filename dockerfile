@@ -20,11 +20,11 @@ RUN pip install b2sdk emails python-dotenv
 
 RUN pip uninstall -y tensorflow
 
-RUN git clone https://github.com/pixray/diffvg
+RUN git clone https://github.com/blaineam/diffvg
 
 RUN cd ./diffvg && git submodule update --init --recursive && cd ..
 
-RUN cd ./diffvg && DIFFVG_CUDA=0 FORCE_CPU=1 python setup.py install && cd ..
+RUN cd ./diffvg && DIFFVG_FORCE_CPU=1 python setup.py install && cd ..
 
 RUN pip freeze | grep torch
 
