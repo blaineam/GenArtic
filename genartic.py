@@ -14,6 +14,8 @@ import torch
 import emails
 import os, glob
 
+cuda_visible_devices_env = os.environ["CUDA_VISIBLE_DEVICES"]
+
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -133,6 +135,7 @@ def notify(recipient, prompt, imagepath, videopath):
 def generate(email, prompt, quality, style, aspect):
     import pixray
     if style == 'pixel':
+      os.environ["CUDA_VISIBLE_DEVICES"]=""
       pixray.run(prompts=prompt,
                         drawer="pixel",
                         aspect=aspect,
@@ -200,6 +203,7 @@ def generate(email, prompt, quality, style, aspect):
     except:
       print("Inoring GPU Error")
 
+      os.environ["CUDA_VISIBLE_DEVICES"]=cuda_visible_devices_env
 
     # Find latest
     outdir=max(glob.glob(os.path.join("outputs", '*/')), key=os.path.getmtime)
