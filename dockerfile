@@ -1,13 +1,8 @@
 FROM nvidia/cuda:11.0.3-base-ubuntu20.04
 
 # Upgrade installed packages
-RUN apt-get update && apt-get upgrade -y && apt-get clean
-
-# (...)
-
-# Python package management and basic dependencies
-RUN apt-get install -y curl python3.7 python3.7-dev python3.7-distutils
-
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt-get install python3.7
 # Register the version in alternatives
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
 
