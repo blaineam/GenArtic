@@ -19,8 +19,6 @@ from pathlib import Path
 
 dotenv_path = Path('/content/.env')
 load_dotenv(dotenv_path=dotenv_path)
-print(os.environ.get("DIFFVG_FORCE_CPU", "0"))
-os.environ["DIFFVG_FORCE_CPU"] = "1"
 application_key_id = os.environ.get('B2_APPLICATION_KEY_ID')
 application_key = os.environ.get('B2_APPLICATION_KEY')
 bucket = os.environ.get('BUCKET')
