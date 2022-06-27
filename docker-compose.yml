@@ -1,0 +1,15 @@
+version: "3"
+services:
+  genartic:
+    env_file:
+      - .env
+    restart: always 
+    container_name: genartic
+    image: genartic
+    build: 
+      context: . 
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
