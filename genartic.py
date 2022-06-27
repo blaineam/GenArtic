@@ -132,7 +132,7 @@ def notify(recipient, prompt, imagepath, videopath):
 # Define the main function
 def generate(email, prompt, quality, style, aspect):
     import pixray
-    cuda_visible_devices_env = os.environ.get("CUDA_VISIBLE_DEVICES")
+    cuda_visible_devices_env = os.environ.get("CUDA_VISIBLE_DEVICES", "0")
     if style == 'pixel':
       os.environ["CUDA_VISIBLE_DEVICES"]=""
       pixray.run(prompts=prompt,
