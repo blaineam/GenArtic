@@ -28,6 +28,10 @@ ses_smtp_endpoint = os.environ.get('SES_SMTP_ENDPOINT')
 ses_smtp_username = os.environ.get('SES_SMTP_USERNAME')
 ses_smtp_password = os.environ.get('SES_SMTP_PASSWORD')
 b2_friendly_url_hostname=os.environ.get('B2_FRIENDLY_URL_HOSTNAME')
+primary_username = os.environ.get('PRIMARY_USERNAME')
+primary_password = os.environ.get('PRIMARY_PASSWORD')
+secondary_username = os.environ.get('SECONDARY_USERNAME')
+secondary_password = os.environ.get('SECONDARY_PASSWORD')
 
 try:
   torch.cuda.empty_cache()
@@ -224,4 +228,4 @@ aspect = gr.Radio(choices=['square', 'widescreen','portrait'], label="Size")
 
 # Launch the demo
 iface = gr.Interface(fn=generate, inputs=[email, prompt, quality, style, aspect], outputs=[gr.Image(), gr.PlayableVideo()],live=False)
-iface.launch(debug=True, share=True, enable_queue=True, server_port=8873, server_name="0.0.0.0")
+iface.launch(debug=True, share=True, enable_queue=True, server_port=8873, server_name="0.0.0.0", auth=[(primary_username, primary_password),(secondary_username, secondary_password)])
