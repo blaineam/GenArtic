@@ -14,8 +14,6 @@ import torch
 import emails
 import os, glob
 
-cuda_visible_devices_env = os.environ["CUDA_VISIBLE_DEVICES"]
-
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -134,6 +132,7 @@ def notify(recipient, prompt, imagepath, videopath):
 # Define the main function
 def generate(email, prompt, quality, style, aspect):
     import pixray
+    cuda_visible_devices_env = os.environ.get("CUDA_VISIBLE_DEVICES")
     if style == 'pixel':
       os.environ["CUDA_VISIBLE_DEVICES"]=""
       pixray.run(prompts=prompt,
