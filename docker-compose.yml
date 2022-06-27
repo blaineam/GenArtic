@@ -3,6 +3,8 @@ services:
   genartic:
     env_file:
       - .env
+    ports:
+      - "8873:8873"
     restart: always 
     container_name: genartic
     image: genartic

@@ -1,10 +1,36 @@
 FROM python:3.7
 
-ADD requirements.txt /
+RUN mkdir -p /content
 
-RUN pip install -r  /requirements.txt
+WORKDIR /content
 
-ADD genartic.py /
+RUN git clone --recursive --branch release https://github.com/pixray/pixray
+
+RUN echo "gradio" >> pixray/requirements.txt
+
+RUN pip install -r pixray/requirements.txt
+
+RUN pip install basicsr 
+
+RUN pip install b2sdk emails python-dotenv
+
+RUN pip uninstall -y tensorflow
+
+RUN git clone https://github.com/pixray/diffvg
+
+RUN cd ./diffvg && git submodule update --init --recursive && cd ..
+
+RUN cd ./diffvg && python setup.py install && cd ..
+
+RUN pip freeze | grep torch
+
+RUN mkdir -p /content/models/
+
+RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.yaml https://dl.nmkd.de/ai/clip/coco/coco.yaml
+
+RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.ckpt https://dl.nmkd.de/ai/clip/coco/coco.ckpt
+
+ADD genartic.py /content/
 
 ENV PYTHONUNBUFFERED=1
 
