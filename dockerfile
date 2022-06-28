@@ -3,7 +3,7 @@ FROM nvidia/cuda:11.0.3-base-ubuntu20.04
 # Upgrade installed packages
 
 RUN apt update
-RUN apt install software-properties-common
+RUN apt install -y software-properties-common
 RUN add-apt-repository -y ppa:deadsnakes/ppa
 RUN apt install -y python3.7
 # Register the version in alternatives
