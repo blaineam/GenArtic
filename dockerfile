@@ -28,6 +28,7 @@ RUN pip install torch torchvision torchaudio --extra-index-url https://download.
 RUN pip install basicsr 
 RUN pip install b2sdk emails python-dotenv
 RUN pip uninstall -y tensorflow
+RUN echo "foo"
 RUN git clone https://github.com/blaineam/diffvg
 RUN cd ./diffvg && git submodule update --init --recursive && cd ..
 RUN apt-get install -y build-essential libssl-dev
