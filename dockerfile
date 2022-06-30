@@ -31,7 +31,6 @@ RUN pip uninstall -y tensorflow
 RUN echo "foo"
 RUN git clone https://github.com/blaineam/diffvg
 RUN cd ./diffvg && git submodule update --init --recursive && cd ..
-RUN apt-get install -y build-essential libssl-dev
 RUN apt install -y cmake
 RUN cd ./diffvg && DIFFVG_CUDA=1 python setup.py install && cd ..
 RUN pip freeze | grep torch
