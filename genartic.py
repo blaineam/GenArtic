@@ -192,6 +192,19 @@ def generate(email, prompt, quality, style, aspect):
                         init_noise="snow",
                         clip_models='ViT-B/16',
                         make_video=True)
+    
+    if style == 'wikiart':
+      pixray.run(prompts=prompt,
+                        drawer="vqgan",
+                        vqgan_model="wikiart_16384",
+                        aspect=aspect,
+                        quality=quality,
+                        batches=2,
+                        num_cuts=30,
+                        iterations=100,
+                        init_noise="snow",
+                        clip_models='ViT-B/16',
+                        make_video=True)
 
     
     try:
@@ -221,7 +234,15 @@ def generate(email, prompt, quality, style, aspect):
 email = gr.Textbox(placeholder="youremail@youremail.com", label="Your Email Address to receive the completed generations")
 prompt = gr.Textbox(value="Underwater city", label="Text Prompt")
 quality = gr.Radio(choices=['draft', 'normal', 'better', 'best'], label="Quality")
-style = gr.Radio(choices=['image', 'painting', 'pixel', 'clipdraw', 'line_sketch'], label="Type")
+style = gr.Radio(choices=[
+    'image', 
+    'painting', 
+    'wikiart'
+# wait untill pixray (diffvg) adds support for cuda 11
+#     'pixel', 
+#     'clipdraw', 
+#     'line_sketch'
+], label="Type")
 aspect = gr.Radio(choices=['square', 'widescreen','portrait'], label="Size")
 
 # Launch the demo
