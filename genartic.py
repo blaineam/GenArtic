@@ -136,8 +136,8 @@ def generate(email, prompt, quality, style, aspect):
                         drawer="pixel",
                         aspect=aspect,
                         quality=quality,
-                        batches=2
-                        num_cuts=12
+                        batches=2,
+                        num_cuts=12,
                         iterations=100,
                         init_noise="snow",
                         clip_models='RN50',
@@ -149,8 +149,8 @@ def generate(email, prompt, quality, style, aspect):
                         vqgan_model="coco",
                         aspect=aspect,
                         quality=quality,
-                        batches=2
-                        num_cuts=12
+                        batches=2,
+                        num_cuts=12,
                         iterations=100,
                         init_noise="snow",
                         clip_models='RN50',
@@ -161,7 +161,7 @@ def generate(email, prompt, quality, style, aspect):
                         drawer="clipdraw",
                         aspect=aspect,
                         quality=quality,
-                        batches=2
+                        batches=2,
                         num_cuts=12,
                         iterations=100,
                         init_noise="snow",
