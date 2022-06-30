@@ -136,11 +136,11 @@ def generate(email, prompt, quality, style, aspect):
                         drawer="pixel",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
-                        num_cuts=11,
+                        batches=5,
+                        num_cuts=2,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='ViT-B/16',
+                        clip_models='RN50',
                         make_video=True)
     
     if style == 'painting':
@@ -149,11 +149,11 @@ def generate(email, prompt, quality, style, aspect):
                         vqgan_model="coco",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
+                        batches=5,
                         num_cuts=2,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='ViT-B/16',
+                        clip_models='RN50',
                         make_video=True)
 
     if style == 'clipdraw':
@@ -161,11 +161,11 @@ def generate(email, prompt, quality, style, aspect):
                         drawer="clipdraw",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
+                        batches=5,
                         num_cuts=2,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='ViT-B/16',
+                        clip_models='RN50',
                         make_video=True)
 
     if style == 'line_sketch':
@@ -173,11 +173,11 @@ def generate(email, prompt, quality, style, aspect):
                         drawer="line_sketch",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
+                        batches=5,
                         num_cuts=2,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='ViT-B/16',
+                        clip_models='RN50',
                         make_video=True)
     
     if style == 'image':
@@ -186,11 +186,11 @@ def generate(email, prompt, quality, style, aspect):
                         vqgan_model="imagenet_f16_16384",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
+                        batches=5,
                         num_cuts=2,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='ViT-B/16',
+                        clip_models='RN50',
                         make_video=True)
     
     if style == 'wikiart':
@@ -199,11 +199,11 @@ def generate(email, prompt, quality, style, aspect):
                         vqgan_model="wikiart_16384",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
+                        batches=5,
                         num_cuts=2,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='ViT-B/16',
+                        clip_models='RN50',
                         make_video=True)
 
     
