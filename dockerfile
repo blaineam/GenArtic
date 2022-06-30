@@ -31,7 +31,7 @@ RUN pip uninstall -y tensorflow
 RUN git clone https://github.com/blaineam/diffvg
 RUN cd ./diffvg && git submodule update --init --recursive && cd ..
 RUN apt-get install -y build-essential libssl-dev
-RUN cd /tmp && wget https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0.tar.gz && tar -zxvf cmake-3.20.0.tar.gz && cd cmake-3.20.0 && ./bootstrap && make && make install && /content 
+RUN snap install cmake –classic 
 RUN cd ./diffvg && DIFFVG_CUDA=1 python setup.py install && cd ..
 RUN pip freeze | grep torch
 RUN mkdir -p /content/models/
