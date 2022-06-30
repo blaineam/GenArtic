@@ -28,12 +28,6 @@ RUN pip install torch torchvision torchaudio --extra-index-url https://download.
 RUN pip install basicsr 
 RUN pip install b2sdk emails python-dotenv
 RUN pip uninstall -y tensorflow
-RUN echo "foo"
-RUN git clone https://github.com/blaineam/diffvg
-RUN cd ./diffvg && git submodule update --init --recursive && cd ..
-RUN apt install -y cmake
-RUN cd ./diffvg && DIFFVG_CUDA=1 python setup.py install && cd ..
-RUN pip freeze | grep torch
 RUN mkdir -p /content/models/
 RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.yaml https://dl.nmkd.de/ai/clip/coco/coco.yaml
 RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.ckpt https://dl.nmkd.de/ai/clip/coco/coco.ckpt
