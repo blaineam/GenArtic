@@ -29,8 +29,8 @@ RUN pip install basicsr
 RUN pip install b2sdk emails python-dotenv
 RUN pip uninstall -y tensorflow
 RUN mkdir -p /content/models/
-RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.yaml https://dl.nmkd.de/ai/clip/coco/coco.yaml
-RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.ckpt https://dl.nmkd.de/ai/clip/coco/coco.ckpt
+# RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.yaml https://dl.nmkd.de/ai/clip/coco/coco.yaml
+# RUN wget -q --show-progress -nc -O /content/models/vqgan_coco.ckpt https://dl.nmkd.de/ai/clip/coco/coco.ckpt
 RUN apt update && apt install -y ffmpeg
 ADD genartic.py /content/
 ENV PYTHONUNBUFFERED=1
