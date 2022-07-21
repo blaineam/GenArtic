@@ -136,11 +136,8 @@ def generate(email, prompt, quality, style, aspect):
                         drawer="pixel",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
-                        num_cuts=12,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='RN50',
                         make_video=True)
     
     if style == 'painting':
@@ -149,11 +146,8 @@ def generate(email, prompt, quality, style, aspect):
                         vqgan_model="coco",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
-                        num_cuts=12,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='RN50',
                         make_video=True)
 
     if style == 'clipdraw':
@@ -161,11 +155,8 @@ def generate(email, prompt, quality, style, aspect):
                         drawer="clipdraw",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
-                        num_cuts=12,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='RN50',
                         make_video=True)
 
     if style == 'line_sketch':
@@ -173,37 +164,28 @@ def generate(email, prompt, quality, style, aspect):
                         drawer="line_sketch",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
-                        num_cuts=12,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='RN50',
                         make_video=True)
     
     if style == 'image':
       pixray.run(prompts=prompt,
                         drawer="vqgan",
-                        vqgan_model="imagenet_f16_1024",
+                        vqgan_model="imagenet_f16_16384",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
-                        num_cuts=12,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='RN50',
                         make_video=True)
     
     if style == 'wikiart':
       pixray.run(prompts=prompt,
                         drawer="vqgan",
-                        vqgan_model="wikiart_1024",
+                        vqgan_model="wikiart_16384",
                         aspect=aspect,
                         quality=quality,
-                        batches=2,
-                        num_cuts=12,
                         iterations=100,
                         init_noise="snow",
-                        clip_models='RN50',
                         make_video=True)
 
     
