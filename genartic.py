@@ -13,91 +13,59 @@ import gradio as gr
 import torch
 import emails
 import os, glob
+import boto3
 
 from dotenv import load_dotenv
 from pathlib import Path
 
 dotenv_path = Path('/content/.env')
 load_dotenv(dotenv_path=dotenv_path)
-application_key_id = os.environ.get('B2_APPLICATION_KEY_ID')
-application_key = os.environ.get('B2_APPLICATION_KEY')
+access_key = os.environ.get('AWS_ACCESS_KEY_ID')
+access_secret = os.environ.get('AWS_SECRET_ACCESS_KEY')
+endpoint=os.environ.get('S3_ENDPOINT')
 bucket = os.environ.get('BUCKET')
 ses_identity_sender = os.environ.get('SES_IDENTITY_SENDER')
 ses_smtp_endpoint = os.environ.get('SES_SMTP_ENDPOINT')
 ses_smtp_username = os.environ.get('SES_SMTP_USERNAME')
 ses_smtp_password = os.environ.get('SES_SMTP_PASSWORD')
-b2_friendly_url_hostname=os.environ.get('B2_FRIENDLY_URL_HOSTNAME')
-primary_username = os.environ.get('PRIMARY_USERNAME')
-primary_password = os.environ.get('PRIMARY_PASSWORD')
-secondary_username = os.environ.get('SECONDARY_USERNAME')
-secondary_password = os.environ.get('SECONDARY_PASSWORD')
 
 try:
   torch.cuda.empty_cache()
 except:
   print("Inoring GPU Error")
 
-from b2sdk.v2 import B2Api
-from b2sdk.v2 import InMemoryAccountInfo
-info = InMemoryAccountInfo()
-b2_api = B2Api(info)
-b2_api.authorize_account("production", application_key_id, application_key)
+session = boto3.session.Session()
 
-def sync_to_b2(outputdir):
-  from b2sdk.v2 import ScanPoliciesManager
-  from b2sdk.v2 import parse_folder
-  from b2sdk.v2 import Synchronizer
-  from b2sdk.v2 import SyncReport
-  from b2sdk.v2 import EncryptionSetting
-  from b2sdk.v2 import EncryptionMode
-  from b2sdk.v2 import BasicSyncEncryptionSettingsProvider
-  from b2sdk.v2 import EncryptionAlgorithm
-  import time
-  import sys
+client = session.client(
+        service_name='s3',
+        aws_access_key_id=access_key,
+        aws_secret_access_key=access_secret,
+        endpoint_url=endpoint,
+)
 
-  source = outputdir
-  destination = os.path.join('b2://' + bucket + '/genartic/', os.path.basename(os.path.normpath(outputdir)))
+def sync_to_s3(local_directory):
+  destination = '/genartic/'
 
   print("syncing: ")
-  print(source)
-  print("To: ")
-  print(destination)
+  print(local_directory)
 
-  source = parse_folder(source, b2_api)
-  destination = parse_folder(destination, b2_api)
-
-  policies_manager = ScanPoliciesManager(exclude_all_symlinks=True)
-
-  synchronizer = Synchronizer(
-    max_workers=10,
-    policies_manager=policies_manager,
-    dry_run=False,
-    allow_empty_source=True,
-  )
-
-  no_progress = False
-  encryptionsettings = EncryptionSetting(mode=EncryptionMode.SSE_B2,algorithm=EncryptionAlgorithm.AES256)
-  encryption_settings_provider = BasicSyncEncryptionSettingsProvider(
-    {
-      bucket: encryptionsettings
-    },
-    {
-      bucket: encryptionsettings
-    }
-  )
-  with SyncReport(sys.stdout, no_progress) as reporter:
-    synchronizer.sync_folders(
-      source_folder=source,
-      dest_folder=destination,
-      now_millis=int(round(time.time() * 1000)),
-      reporter=reporter,
-      encryption_settings_provider=encryption_settings_provider,
-    )
+  for root, dirs, files in os.walk(local_directory):
+    for filename in files:
+      local_path = os.path.join(root, filename)
+      relative_path = os.path.relpath(local_path, local_directory)
+      s3_path = os.path.join(destination,os.path.basename(os.path.normpath(local_directory)), relative_path)
+      print(f'Searching "{s3_path}" in "{bucket}"')
+      try:
+        client.head_object(Bucket=bucket, Key=s3_path)
+        print(f'Path found on S3! Skipping {s3_path}...')
+      except:
+        print(f'Uploading {s3_path}...')
+        client.upload_file(local_path, bucket, s3_path)
 
 def notify(recipient, prompt, imagepath, videopath):
   sender = ses_identity_sender
-  image = """https://%s/file/%s/genartic/%s""" % (b2_friendly_url_hostname,bucket,imagepath)
-  video = """https://%s/file/%s/genartic/%s""" % (b2_friendly_url_hostname,bucket,videopath)
+  image = """%s/%s/genartic/%s""" % (endpoint,bucket,imagepath)
+  video = """%s/%s/genartic/%s""" % (endpoint,bucket,videopath)
 
   body = """<p>Thank you for using GenArtic to create artwork for your prompt: </p>
   <br /><p>%s</p>
@@ -117,10 +85,10 @@ def notify(recipient, prompt, imagepath, videopath):
 
   # Now you can send the email!
   r = message.send(
-      to = recipient, 
+      to = recipient,
       smtp = {
-          "host": ses_smtp_endpoint, 
-          "port": 587, 
+          "host": ses_smtp_endpoint,
+          "port": 587,
           "timeout": 5,
           "user": ses_smtp_username,
           "password": ses_smtp_password,
@@ -139,7 +107,7 @@ def generate(email, prompt, quality, style, aspect):
                         iterations=100,
                         init_noise="snow",
                         make_video=True)
-    
+
     if style == 'painting':
       pixray.run(prompts=prompt,
                         drawer="vqgan",
@@ -167,7 +135,7 @@ def generate(email, prompt, quality, style, aspect):
                         iterations=100,
                         init_noise="snow",
                         make_video=True)
-    
+
     if style == 'image':
       pixray.run(prompts=prompt,
                         drawer="vqgan",
@@ -177,7 +145,7 @@ def generate(email, prompt, quality, style, aspect):
                         iterations=100,
                         init_noise="snow",
                         make_video=True)
-    
+
     if style == 'wikiart':
       pixray.run(prompts=prompt,
                         drawer="vqgan",
@@ -188,7 +156,7 @@ def generate(email, prompt, quality, style, aspect):
                         init_noise="snow",
                         make_video=True)
 
-    
+
     try:
       torch.cuda.empty_cache()
     except:
@@ -198,10 +166,10 @@ def generate(email, prompt, quality, style, aspect):
     outdir=max(glob.glob(os.path.join("outputs", '*/')), key=os.path.getmtime)
 
     try:
-      sync_to_b2(outdir)
+      sync_to_s3(outdir)
     except:
-      print("Inoring B2 Error")
-    
+      print("Inoring S3 Error")
+
     imagepath = os.path.join(outdir, 'output.png')
     videopath = os.path.join(outdir, 'output.mp4')
 
@@ -210,19 +178,19 @@ def generate(email, prompt, quality, style, aspect):
     except:
       print("Inoring SES Error")
 
-    return imagepath, videopath 
+    return imagepath, videopath
 
 # Create the UI
 email = gr.Textbox(placeholder="youremail@youremail.com", label="Your Email Address to receive the completed generations")
 prompt = gr.Textbox(value="Underwater city", label="Text Prompt")
 quality = gr.Radio(choices=['draft', 'normal', 'better', 'best'], label="Quality")
 style = gr.Radio(choices=[
-    'image', 
-    'painting', 
+    'image',
+    'painting',
     'wikiart'
 # wait untill pixray (diffvg) adds support for cuda 11
-#     'pixel', 
-#     'clipdraw', 
+#     'pixel',
+#     'clipdraw',
 #     'line_sketch'
 ], label="Type")
 aspect = gr.Radio(choices=['square', 'widescreen','portrait'], label="Size")
@@ -230,4 +198,3 @@ aspect = gr.Radio(choices=['square', 'widescreen','portrait'], label="Size")
 # Launch the demo
 iface = gr.Interface(fn=generate, inputs=[email, prompt, quality, style, aspect], outputs=[gr.Image(), gr.PlayableVideo()],live=False)
 iface.launch(debug=True, share=True, enable_queue=True, server_port=8873, server_name="0.0.0.0")
-#, auth=[(primary_username, primary_password),(secondary_username, secondary_password)]

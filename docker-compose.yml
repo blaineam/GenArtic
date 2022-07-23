@@ -5,11 +5,9 @@ services:
       - .env
     ports:
       - "8873:8873"
-    restart: always 
+    restart: always
     container_name: genartic
-    image: genartic
-    build: 
-      context: . 
+    image: cenode/genartic
     deploy:
       resources:
         reservations:
