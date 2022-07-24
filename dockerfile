@@ -27,6 +27,9 @@ RUN pip uninstall -y torch torchvision torchaudio
 RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
 # Uninstall tensorflow because it is not used
 RUN pip uninstall -y tensorflow
+# Install super resolution dependencies
+RUN pip install isr
+RUN pip install 'h5py==2.10.0' --force-reinstall
 # Install GenArtic Python Module Dependencies
 RUN pip install boto3 emails python-dotenv
 # Create location to store ML models

@@ -12,8 +12,14 @@ sys.path.append("pixray")
 import gradio as gr
 import torch
 import emails
+import shutil
 import os, glob
 import boto3
+
+import numpy as np
+from PIL import Image
+
+from ISR.models import RDN, RRDN
 
 from dotenv import load_dotenv
 from pathlib import Path
@@ -96,6 +102,18 @@ def notify(recipient, prompt, imagepath, videopath):
       },
   )
 
+def sr_image(image_path):
+  try:
+    img = Image.open(image_path)
+    img.resize(size=(int(img.size[0]*4), int(img.size[1]*4)), resample=Image.BICUBIC)
+    model = RRDN(weights='gans')
+    sr_img = model.predict(np.array(img), by_patch_of_size=50)
+    im = Image.fromarray(sr_img)
+    im.save(image_path)
+  except Exception as e:
+      print(e)
+      print("Cannot upscale image")
+
 # Define the main function
 def generate(email, prompt, quality, style, aspect):
     import pixray
@@ -165,13 +183,17 @@ def generate(email, prompt, quality, style, aspect):
     # Find latest
     outdir=max(glob.glob(os.path.join("outputs", '*/')), key=os.path.getmtime)
 
+    imagepath = os.path.join(outdir, 'output.png')
+    videopath = os.path.join(outdir, 'output.mp4')
+
+    sr_image(imagepath)
+
     try:
+      shutil.rmtree(os.path.join(outdir, "video"), True)
+      shutil.rmtree(os.path.join(outdir, "steps"), True)
       sync_to_s3(outdir)
     except:
       print("Inoring S3 Error")
-
-    imagepath = os.path.join(outdir, 'output.png')
-    videopath = os.path.join(outdir, 'output.mp4')
 
     try:
       notify(email, prompt, os.path.join(os.path.basename(os.path.normpath(outdir)),os.path.basename(imagepath)), os.path.join(os.path.basename(os.path.normpath(outdir)),os.path.basename(videopath)))
