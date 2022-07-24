@@ -18,3 +18,4 @@ A Simple Text to Image Generation As a Docker Web Service
 - DIFFVG still needs to add CUDA 11 support to fix the pixel, clip draw, and line drawing modes
 - S3 bucket currently needs to be public
 - Nothing cleans up previous generated images
+- still trying to publish image to docker hub
